@@ -52,7 +52,7 @@ export default function SignIn() {
       alert("Password do not match");
     } else {
       fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDmHlY2CIghjm2veYLfFeV6angXtCwyW0A",
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
         {
           method: "POST",
           body: JSON.stringify({
@@ -78,7 +78,7 @@ export default function SignIn() {
           }
         })
         .then((data) => {
-          console.log(data);
+          console.log("Signup", data);
           navigate("/login");
         })
         .catch((err) => {
@@ -153,7 +153,11 @@ export default function SignIn() {
                 <Link href="#" variant="body2"></Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link
+                  href="#"
+                  variant="body2"
+                  onClick={() => navigate("./login")}
+                >
                   {"Already have an account? Sign In"}
                 </Link>
               </Grid>

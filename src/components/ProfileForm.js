@@ -24,7 +24,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="/">
+      <Link color="inherit" href="https://mui.com/">
         Your Website
       </Link>{" "}
       {new Date().getFullYear()}
@@ -33,26 +33,38 @@ function Copyright(props) {
   );
 }
 
+// TODO remove, this demo shouldn't need to reset the theme.
+
 const defaultTheme = createTheme();
 
-export default function LogIn() {
-  const navigate = useNavigate();
+export default function ProfileForm() {
   const authCntxt = React.useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleCancel = () => {
+    navigate("/home");
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     let userDetails = {
-      email: data.get("email"),
-      password: data.get("password"),
+      userName: data.get("name"),
+      photoUrl: data.get("photourl"),
     };
-
+    console.log(userDetails);
+    console.log("contexttoken", authCntxt.token, "email", authCntxt.email);
+    console.log(localStorage.getItem("token"));
+    console.log(authCntxt.isLoggedIn);
+    let token = localStorage.getItem("token");
     fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
+      "https://identitytoolkit.googleapis.com/v1/accounts:update??key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
       {
         method: "POST",
         body: JSON.stringify({
-          email: userDetails.email,
-          password: userDetails.password,
+          idToken: token,
+          displayName: userDetails.userName,
+          photoUrl: userDetails.photoUrl,
+          // deleteAttribute: "DISPLAY_NAME",
+
           returnSecureToken: true,
         }),
         headers: {
@@ -73,9 +85,7 @@ export default function LogIn() {
         }
       })
       .then((data) => {
-        authCntxt.login(data.idToken, data.email);
-        console.log("Login", data.idToken);
-        navigate("/emailverification");
+        console.log(data);
       })
       .catch((err) => {
         alert(err.message);
@@ -84,9 +94,12 @@ export default function LogIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="l">
         <CssBaseline />
         <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
           sx={{
             marginTop: 8,
             display: "flex",
@@ -94,58 +107,54 @@ export default function LogIn() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Avatar src="/broken-image.jpg" />
           <Typography component="h1" variant="h5">
-            Log In
+            Profile Details
           </Typography>
           <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 1,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
             <TextField
-              margin="normal"
+              style={{ margin: 10 }}
               required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="name"
+              label="Full Name"
+              name="name"
               autoFocus
             />
             <TextField
-              margin="normal"
+              style={{ margin: 10 }}
               required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
+              name="photourl"
+              label="Profile Photo URL"
+              type="url"
+              id="photourl"
             />
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              color="error"
+              style={{ margin: 10 }}
+              sx={{ mt: 3, mb: 2 }}
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
 
             <Button
               type="submit"
-              fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              style={{ margin: 10 }}
             >
-              Log In
+              Update
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  {"Forgot Password?"}
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
