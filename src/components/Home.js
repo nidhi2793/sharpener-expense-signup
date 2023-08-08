@@ -7,8 +7,16 @@ import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import AuthContext from "../store/authContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const authCntxt = React.useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    authCntxt.logout();
+    navigate("/login");
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={{ background: "white" }}>
@@ -21,7 +29,11 @@ export default function Header() {
           >
             Welcome to Expense Tacker !!!
           </Typography>
-
+          {authCntxt.isLoggedIn && (
+            <Button onClick={handleLogout} style={{ margin: 10 }}>
+              Log Out
+            </Button>
+          )}
           <Typography color="black">
             Your profile is incomplete.{" "}
             <Link underline="hover" color="blue" href="/profileform">
