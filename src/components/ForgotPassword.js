@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../store/authContext";
 
 function Copyright(props) {
   return (
@@ -23,7 +24,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="/">
+      <Link color="inherit" href="/signup">
         Your Website
       </Link>{" "}
       {new Date().getFullYear()}
@@ -32,59 +33,49 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
-export default function SignUp() {
+export default function ForgotPassword() {
   const navigate = useNavigate();
-
+  const authCntxt = React.useContext(AuthContext);
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     let userDetails = {
       email: data.get("email"),
-      password: data.get("password"),
-      confirmpassword: data.get("confirmpassword"),
     };
 
-    if (userDetails.password !== userDetails.confirmpassword) {
-      alert("Password do not match");
-    } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: userDetails.email,
-            password: userDetails.password,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return res.json().then((data) => {
-              console.log("failed", data);
-              let errorMessage = "Authentication Failed";
+    fetch(
+      "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          requestType: "PASSWORD_RESET",
+          email: userDetails.email,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            console.log("failed", data);
+            let errorMessage = "Authentication Failed";
 
-              throw new Error(errorMessage);
-            });
-          }
-        })
-        .then((data) => {
-          console.log("Signup", data);
-          navigate("/login");
-        })
-        .catch((err) => {
-          alert(err.message);
-        });
-    }
+            throw new Error(errorMessage);
+          });
+        }
+      })
+      .then((data) => {
+        navigate("/login");
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
 
   return (
@@ -103,7 +94,7 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Forgot Password
           </Typography>
           <Box
             component="form"
@@ -121,24 +112,9 @@ export default function SignUp() {
               autoComplete="email"
               autoFocus
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="confirmpassword"
-              label=" Confirm Password"
-              type="password"
-              id="confirmpassword"
-            />
+            <Typography>
+              A password reset link will be sent to your email id.
+            </Typography>
 
             <Button
               type="submit"
@@ -146,19 +122,12 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Send Link
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2"></Link>
-              </Grid>
               <Grid item>
-                <Link
-                  href="#"
-                  variant="body2"
-                  onClick={() => navigate("./login")}
-                >
-                  {"Already have an account? Sign In"}
+                <Link href="/" variant="body2">
+                  {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
