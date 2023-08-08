@@ -36,7 +36,7 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function LogIn() {
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -45,46 +45,41 @@ export default function SignIn() {
     let userDetails = {
       email: data.get("email"),
       password: data.get("password"),
-      confirmpassword: data.get("confirmpassword"),
     };
 
-    if (userDetails.password !== userDetails.confirmpassword) {
-      alert("Password do not match");
-    } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDmHlY2CIghjm2veYLfFeV6angXtCwyW0A",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: userDetails.email,
-            password: userDetails.password,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return res.json().then((data) => {
-              console.log("failed", data);
-              let errorMessage = "Authentication Failed";
+    fetch(
+      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDmHlY2CIghjm2veYLfFeV6angXtCwyW0A",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: userDetails.email,
+          password: userDetails.password,
+          returnSecureToken: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            console.log("failed", data);
+            let errorMessage = "Authentication Failed";
 
-              throw new Error(errorMessage);
-            });
-          }
-        })
-        .then((data) => {
-          console.log(data);
-          navigate("/login");
-        })
-        .catch((err) => {
-          alert(err.message);
-        });
-    }
+            throw new Error(errorMessage);
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data);
+        navigate("/home");
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
 
   return (
@@ -103,7 +98,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Log In
           </Typography>
           <Box
             component="form"
@@ -130,15 +125,6 @@ export default function SignIn() {
               type="password"
               id="password"
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="confirmpassword"
-              label=" Confirm Password"
-              type="password"
-              id="confirmpassword"
-            />
 
             <Button
               type="submit"
@@ -146,15 +132,17 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Log In
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2"></Link>
+                <Link href="#" variant="body2">
+                  {"Forgot Password?"}
+                </Link>
               </Grid>
               <Grid item>
                 <Link href="#" variant="body2">
-                  {"Already have an account? Sign In"}
+                  {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
