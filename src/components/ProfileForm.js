@@ -63,8 +63,6 @@ export default function ProfileForm() {
           idToken: token,
           displayName: userDetails.userName,
           photoUrl: userDetails.photoUrl,
-          // deleteAttribute: "DISPLAY_NAME",
-
           returnSecureToken: true,
         }),
         headers: {
@@ -79,7 +77,6 @@ export default function ProfileForm() {
           return res.json().then((data) => {
             console.log("failed", data);
             let errorMessage = "Authentication Failed";
-
             throw new Error(errorMessage);
           });
         }

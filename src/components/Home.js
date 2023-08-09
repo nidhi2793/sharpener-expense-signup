@@ -9,6 +9,9 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import AuthContext from "../store/authContext";
 import { useNavigate } from "react-router-dom";
+import ExpenseForm from "./ExpenseForm";
+import TotalAmount from "./TotalAmount";
+import ExpenseTable from "./ExpenseTable";
 
 export default function Header() {
   const authCntxt = React.useContext(AuthContext);
@@ -42,6 +45,9 @@ export default function Header() {
           </Typography>
         </Toolbar>
       </AppBar>
+      <ExpenseForm />
+      <TotalAmount />
+      <ExpenseTable />
     </Box>
   );
 }

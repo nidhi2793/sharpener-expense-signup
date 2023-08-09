@@ -6,10 +6,11 @@ import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import ProfileForm from "./components/ProfileForm";
 import EmailVerification from "./components/EmailVerification";
 import ForgotPassword from "./components/ForgotPassword";
+import ExpenseProvider from "./store/ExpenseProvider";
 
 function App() {
   return (
-    <>
+    <ExpenseProvider>
       <Router>
         <Routes>
           <Route exact path="/" element={<SignUp />} />
@@ -24,7 +25,7 @@ function App() {
           />
         </Routes>
       </Router>
-    </>
+    </ExpenseProvider>
   );
 }
 
