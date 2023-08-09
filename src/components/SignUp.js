@@ -47,6 +47,7 @@ export default function SignUp() {
       password: data.get("password"),
       confirmpassword: data.get("confirmpassword"),
     };
+    const editedEmail = userDetails.email.replace("@", "").replace(".", "");
 
     if (userDetails.password !== userDetails.confirmpassword) {
       alert("Password do not match");
@@ -84,6 +85,20 @@ export default function SignUp() {
         .catch((err) => {
           alert(err.message);
         });
+
+      let Expenses = {};
+      fetch(
+        `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`,
+        {
+          method: "POST",
+          body: JSON.stringify(Expenses),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
     }
   };
 

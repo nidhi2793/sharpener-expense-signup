@@ -75,7 +75,7 @@ export default function LogIn() {
       .then((data) => {
         authCntxt.login(data.idToken, data.email);
         console.log("Login", data.idToken);
-        navigate("/emailverification");
+        navigate("/home");
       })
       .catch((err) => {
         alert(err.message);
@@ -141,7 +141,7 @@ export default function LogIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

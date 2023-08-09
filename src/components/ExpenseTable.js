@@ -57,7 +57,11 @@ export default function ExpenseTable() {
                 {row.description}
               </StyledTableCell>
               <StyledTableCell>
-                Rs {row.expenseAmount.toFixed(2)}
+                Rs{" "}
+                {row.expenseAmount
+                  .toFixed(2)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               </StyledTableCell>
               <StyledTableCell>{row.category}</StyledTableCell>
             </StyledTableRow>

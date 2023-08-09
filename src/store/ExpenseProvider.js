@@ -10,13 +10,9 @@ let defaultExpenseState = {
 
 const ExpenseReducer = (state, action) => {
   if (action.type === "ADD") {
-    const updatedTotalAmount = state.totalAmount + action.expense.expenseAmount;
-
-    const updatedExpense = state.expenses.concat(action.expense);
-
     return {
-      expenses: updatedExpense,
-      totalAmount: updatedTotalAmount,
+      expenses: action.expenses,
+      totalAmount: action.totalAmount,
     };
   }
   if (action.type === "REMOVE") {
@@ -41,13 +37,63 @@ const ExpenseReducer = (state, action) => {
 };
 
 const ExpenseProvider = (props) => {
+  const editedEmail = localStorage
+    .getItem("email")
+    .replace("@", "")
+    .replace(".", "");
+
   const [expenseState, dispatchExpenseAction] = useReducer(
     ExpenseReducer,
     defaultExpenseState
   );
+  useEffect(() => {
+    const setDefaultValue = async () => {
+      await fetch(
+        `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          dispatchExpenseAction({
+            type: "ADD",
+            expenses: data?.expenses || [],
+            totalAmount: data?.totalAmount || 0,
+          });
+          console.log(data);
+        })
+        .catch((err) => console.log(err));
+    };
+    if (editedEmail) {
+      setDefaultValue();
+    }
+  }, [editedEmail]);
 
-  const addExpenseHandler = (expense) => {
-    dispatchExpenseAction({ type: "ADD", expense: expense });
+  const addExpenseHandler = async (expense) => {
+    console.log(expense);
+    const updatedTotalAmount = expenseState.totalAmount + expense.expenseAmount;
+
+    const updatedExpense = expenseState.expenses.concat(expense);
+
+    dispatchExpenseAction({
+      type: "ADD",
+      expenses: updatedExpense,
+      totalAmount: updatedTotalAmount,
+    });
+    await fetch(
+      `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          expenses: updatedExpense,
+          totalAmount: updatedTotalAmount,
+        }),
+      }
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .catch((err) => console.log(err));
   };
 
   const removeItemFromCartHandler = (id) => {

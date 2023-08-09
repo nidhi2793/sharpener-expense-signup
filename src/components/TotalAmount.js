@@ -6,17 +6,17 @@ import Card from "./UI/Card";
 function TotalAmount(props) {
   const expenseCtx = useContext(ExpenseContext);
 
-  const totalAmount = expenseCtx.totalAmount.toFixed(2);
-  const hasExpenses = expenseCtx.expenses.length > 0;
+  const totalAmount = expenseCtx.totalAmount
+    .toFixed(2)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
   return (
     <Card>
-      {hasExpenses && (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <h3 style={{ marginRight: 20 }}>Total Expense:</h3>
-          <span>Rs {totalAmount}</span>
-        </div>
-      )}
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <h3 style={{ marginRight: 20 }}>Total Expense:</h3>
+        <span>Rs {totalAmount}</span>
+      </div>
     </Card>
   );
 }

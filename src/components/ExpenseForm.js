@@ -42,8 +42,6 @@ export default function ExpenseFormForm() {
     });
     event.target.reset();
     setCategory("");
-    console.log("context", ExpenseCntxt.expenses);
-
     console.log(expense);
   };
 
