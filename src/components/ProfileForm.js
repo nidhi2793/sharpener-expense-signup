@@ -33,8 +33,6 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function ProfileForm() {
@@ -51,16 +49,13 @@ export default function ProfileForm() {
       photoUrl: data.get("photourl"),
     };
     console.log(userDetails);
-    console.log("contexttoken", authCntxt.token, "email", authCntxt.email);
-    console.log(localStorage.getItem("token"));
-    console.log(authCntxt.isLoggedIn);
-    let token = localStorage.getItem("token");
+
     fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:update??key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
+      "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
       {
         method: "POST",
         body: JSON.stringify({
-          idToken: token,
+          idToken: localStorage.getItem("token"),
           displayName: userDetails.userName,
           photoUrl: userDetails.photoUrl,
           returnSecureToken: true,
