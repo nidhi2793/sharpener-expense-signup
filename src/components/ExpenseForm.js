@@ -14,12 +14,16 @@ import Box from "@mui/material/Box";
 import { v4 as uuidv4 } from "uuid";
 import ExpenseContext from "../store/ExpenseContext";
 import { Category } from "@mui/icons-material";
+import ExpenseTable from "./ExpenseTable";
+import TotalAmount from "./TotalAmount";
+import Card from "./UI/Card";
 
 const defaultTheme = createTheme();
 
 export default function ExpenseFormForm() {
   const [category, setCategory] = React.useState("");
   const ExpenseCntxt = React.useContext(ExpenseContext);
+  const hasItems = (ExpenseCntxt.expenses || []).length > 0;
 
   const handleChange = (event) => {
     setCategory(event.target.value);
@@ -43,6 +47,10 @@ export default function ExpenseFormForm() {
     event.target.reset();
     setCategory("");
     console.log(expense);
+  };
+
+  const handleEdit = (data) => {
+    console.log(data);
   };
 
   return (
@@ -124,6 +132,30 @@ export default function ExpenseFormForm() {
             </Button>
           </Box>
         </Box>
+      </Container>
+      <Container
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {hasItems && <TotalAmount />}
+        {hasItems && <ExpenseTable onEdit={handleEdit} />}
+        {!hasItems && (
+          <Card>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fontWeight: "bold",
+              }}
+            >
+              <Typography variant="h5">No Expenses Recorded.</Typography>
+            </div>
+          </Card>
+        )}
       </Container>
     </ThemeProvider>
   );

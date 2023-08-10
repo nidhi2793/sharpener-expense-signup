@@ -9,14 +9,18 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useContext } from "react";
 import ExpenseContext from "../store/ExpenseContext";
+import AuthContext from "../store/authContext";
+import { Button } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
+    backgroundColor: "darkgray",
+    color: theme.palette.common.black,
+    fontSize: 18,
+    fontWeight: "bold",
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
+    fontSize: 16,
   },
 }));
 
@@ -30,19 +34,29 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(description, expenseAmount, category) {
-  return { description, expenseAmount, category };
+function createData(description, expenseAmount, category, id) {
+  return { description, expenseAmount, category, id };
 }
 
-export default function ExpenseTable() {
-  const expenseCtx = useContext(ExpenseContext);
-  const rows = expenseCtx.expenses.map((expense) =>
-    createData(expense.description, expense.expenseAmount, expense.category)
+export default function ExpenseTable(props) {
+  const ExpenseCntxt = useContext(ExpenseContext);
+
+  const rows = (ExpenseCntxt.expenses || []).map((expense) =>
+    createData(
+      expense.description,
+      expense.expenseAmount,
+      expense.category,
+      expense.id
+    )
   );
+
+  const expenseRemoveHandler = (id) => {
+    ExpenseCntxt.removeExpense(id);
+  };
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+      <Table aria-label="customized table">
         <TableHead>
           <TableRow>
             <StyledTableCell>Expense Description</StyledTableCell>
@@ -64,6 +78,27 @@ export default function ExpenseTable() {
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               </StyledTableCell>
               <StyledTableCell>{row.category}</StyledTableCell>
+              <StyledTableCell>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={props.onEdit(row)}
+                >
+                  {" "}
+                  Edit
+                </Button>
+              </StyledTableCell>
+
+              <StyledTableCell>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={expenseRemoveHandler.bind(null, row.id)}
+                >
+                  {" "}
+                  Delete
+                </Button>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

@@ -2,20 +2,44 @@ import "./App.css";
 import SignUp from "./components/SignUp";
 import LogIn from "./components/Login";
 import Header from "./components/Home";
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import ProfileForm from "./components/ProfileForm";
 import EmailVerification from "./components/EmailVerification";
 import ForgotPassword from "./components/ForgotPassword";
 import ExpenseProvider from "./store/ExpenseProvider";
+import { useContext } from "react";
+import AuthContext from "./store/authContext";
 
 function App() {
+  const authCntxt = useContext(AuthContext);
   return (
     <ExpenseProvider>
-      <Router>
+      {!authCntxt.isLoggedIn && (
+        <Routes>
+          <Route exact path="/" element={<SignUp />}></Route>
+          <Route
+            exact
+            path="/forgotpassword"
+            element={<ForgotPassword />}
+          ></Route>
+          <Route path="*" element={<LogIn />}></Route>
+        </Routes>
+      )}
+      {authCntxt.isLoggedIn && (
         <Routes>
           <Route exact path="/" element={<SignUp />} />
           <Route exact path="/login" element={<LogIn />} />
-          <Route exact path="/forgotpassword" element={<ForgotPassword />} />
+          <Route
+            exact
+            path="/forgotpassword"
+            element={<ForgotPassword />}
+          ></Route>
           <Route exact path="/home" element={<Header />} />
           <Route exact path="/profileform" element={<ProfileForm />} />
           <Route
@@ -24,7 +48,7 @@ function App() {
             element={<EmailVerification />}
           />
         </Routes>
-      </Router>
+      )}
     </ExpenseProvider>
   );
 }

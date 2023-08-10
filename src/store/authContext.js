@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import ExpenseContext from "./ExpenseContext";
 
 const AuthContext = React.createContext({
   token: "",
@@ -10,22 +11,26 @@ const AuthContext = React.createContext({
 
 export const AuthContextProvider = (props) => {
   const initialToken = localStorage.getItem("token");
+  // const initialEmail = localStorage.getItem("email");
   const [idtoken, setToken] = useState(initialToken);
   const [email, setEmail] = useState("");
+  const ExpenseCntxt = useContext(ExpenseContext);
 
   const userIsLoggedIn = !!idtoken;
-
-  const handleLogIn = (token, email) => {
-    setToken(token);
-    setEmail(email);
+  console.log("email: ", email);
+  const handleLogIn = async (token, email, cb = () => {}) => {
     localStorage.setItem("token", token);
     localStorage.setItem("email", email);
+    setEmail(localStorage.getItem("email"));
+    setToken(localStorage.getItem("token"));
+    cb(true);
   };
 
   const handleLogOut = () => {
     setToken(null);
     setEmail("");
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
   };
 
   const contextValue = {

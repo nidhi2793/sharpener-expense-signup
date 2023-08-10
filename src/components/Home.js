@@ -5,14 +5,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import AuthContext from "../store/authContext";
 import { useNavigate } from "react-router-dom";
 import ExpenseForm from "./ExpenseForm";
 import TotalAmount from "./TotalAmount";
 import ExpenseTable from "./ExpenseTable";
-import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import { useContext } from "react";
 import ExpenseContext from "../store/ExpenseContext";
 import logo from "../assets/expenses.png";
@@ -20,11 +17,13 @@ import logo from "../assets/expenses.png";
 export default function Header() {
   const authCntxt = React.useContext(AuthContext);
   const expenseCtx = useContext(ExpenseContext);
-  const hasExpenses = expenseCtx.expenses.length > 0;
+  // const hasExpenses = expenseCtx.expenses.length > 0;
   const navigate = useNavigate();
   const handleLogout = () => {
     authCntxt.logout();
+    localStorage.removeItem("email");
     navigate("/login");
+    expenseCtx.clearExpense();
   };
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -60,9 +59,6 @@ export default function Header() {
         </Toolbar>
       </AppBar>
       <ExpenseForm />
-      {hasExpenses && <TotalAmount />}
-
-      {hasExpenses && <ExpenseTable />}
     </Box>
   );
 }

@@ -15,21 +15,16 @@ const ExpenseReducer = (state, action) => {
       totalAmount: action.totalAmount,
     };
   }
-  if (action.type === "REMOVE") {
-    const existingExpensesIndex = state.expenses.findIndex(
-      (expense) => expense.id === action.id
-    );
-    const existingExpense = state.expenses[existingExpensesIndex];
-    const updatedTotalAmount =
-      state.totalAmount - existingExpense.expenseAmount;
-
-    const updatedExpense = state.expenses.filter(
-      (expense) => expense.id !== action.id
-    );
-
+  if (action.type === "CLEAR") {
     return {
-      expenses: updatedExpense,
-      totalAmount: updatedTotalAmount,
+      products: action.products,
+      totalAmount: action.totalAmount,
+    };
+  }
+  if (action.type === "REMOVE") {
+    return {
+      expenses: action.updatedExpense,
+      totalAmount: action.updatedTotalAmount,
     };
   }
 
@@ -37,16 +32,24 @@ const ExpenseReducer = (state, action) => {
 };
 
 const ExpenseProvider = (props) => {
-  const editedEmail = localStorage
-    .getItem("email")
-    .replace("@", "")
-    .replace(".", "");
+  const authCntxt = useContext(AuthContext);
+
+  let editedEmail;
+  if (localStorage.getItem("email")) {
+    editedEmail = localStorage
+      .getItem("email")
+      .replace("@", "")
+      .replace(".", "");
+  } else {
+    editedEmail = "";
+  }
 
   const [expenseState, dispatchExpenseAction] = useReducer(
     ExpenseReducer,
     defaultExpenseState
   );
   useEffect(() => {
+    console.log("effect", editedEmail);
     const setDefaultValue = async () => {
       await fetch(
         `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`
@@ -68,12 +71,12 @@ const ExpenseProvider = (props) => {
       setDefaultValue();
     }
   }, [editedEmail]);
+  console.log("editedEmail: ", editedEmail);
 
   const addExpenseHandler = async (expense) => {
-    console.log(expense);
     const updatedTotalAmount = expenseState.totalAmount + expense.expenseAmount;
 
-    const updatedExpense = expenseState.expenses.concat(expense);
+    const updatedExpense = (expenseState.expenses || []).concat(expense);
 
     dispatchExpenseAction({
       type: "ADD",
@@ -96,15 +99,44 @@ const ExpenseProvider = (props) => {
       .catch((err) => console.log(err));
   };
 
-  const removeItemFromCartHandler = (id) => {
+  const removeExpenseHandler = async (id) => {
+    const existingExpensesIndex = expenseState.expenses.findIndex(
+      (expense) => expense.id === id
+    );
+    const existingExpense = expenseState.expenses[existingExpensesIndex];
+    const updatedTotalAmount =
+      expenseState.totalAmount - existingExpense.expenseAmount;
+
+    const updatedExpense = expenseState.expenses.filter(
+      (expense) => expense.id !== id
+    );
     dispatchExpenseAction({ type: "REMOVE", id: id });
+    await fetch(
+      `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          expenses: updatedExpense,
+          totalAmount: updatedTotalAmount,
+        }),
+      }
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const clearExpensesHandler = () => {
+    dispatchExpenseAction({ type: "CLEAR", expenses: [], totalAmount: 0 });
   };
 
   const expenseContext = {
     expenses: expenseState.expenses,
     totalAmount: expenseState.totalAmount,
     addExpense: addExpenseHandler,
-    removeExpense: removeItemFromCartHandler,
+    removeExpense: removeExpenseHandler,
+    clearExpense: clearExpensesHandler,
   };
 
   return (

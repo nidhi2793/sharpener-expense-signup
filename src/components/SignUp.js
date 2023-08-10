@@ -79,7 +79,6 @@ export default function SignUp() {
           }
         })
         .then((data) => {
-          console.log("Signup", data);
           navigate("/login");
         })
         .catch((err) => {

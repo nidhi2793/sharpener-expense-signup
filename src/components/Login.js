@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../store/authContext";
+import { useContext } from "react";
 
 function Copyright(props) {
   return (
@@ -37,8 +38,11 @@ const defaultTheme = createTheme();
 
 export default function LogIn() {
   const navigate = useNavigate();
-  const authCntxt = React.useContext(AuthContext);
+  const authCntxt = useContext(AuthContext);
+
   const handleSubmit = (event) => {
+    console.log("loggin");
+
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     let userDetails = {
@@ -65,18 +69,19 @@ export default function LogIn() {
           return res.json();
         } else {
           return res.json().then((data) => {
-            console.log("failed", data);
             let errorMessage = "Authentication Failed";
-
             throw new Error(errorMessage);
           });
         }
       })
       .then((data) => {
-        authCntxt.login(data.idToken, data.email);
-        console.log("Login", data.idToken);
-        navigate("/home");
+        authCntxt.login(data.idToken, data.email, (auth) => {
+          if (auth) {
+            navigate("/home");
+          }
+        });
       })
+
       .catch((err) => {
         alert(err.message);
       });
