@@ -1,7 +1,7 @@
 import "./App.css";
 import SignUp from "./components/SignUp";
 import LogIn from "./components/Login";
-import Header from "./components/Home";
+import Header from "./components/Header";
 import {
   BrowserRouter as Router,
   Route,
@@ -15,11 +15,14 @@ import ForgotPassword from "./components/ForgotPassword";
 import ExpenseProvider from "./store/ExpenseProvider";
 import { useContext } from "react";
 import AuthContext from "./store/authContext";
+import SignBg from "../src/components/SignBg";
+import Home from "./Home";
 
 function App() {
   const authCntxt = useContext(AuthContext);
   return (
     <ExpenseProvider>
+      <Header />
       {!authCntxt.isLoggedIn && (
         <Routes>
           <Route exact path="/" element={<SignUp />}></Route>
@@ -40,7 +43,7 @@ function App() {
             path="/forgotpassword"
             element={<ForgotPassword />}
           ></Route>
-          <Route exact path="/home" element={<Header />} />
+          <Route exact path="/home" element={<Home />} />
           <Route exact path="/profileform" element={<ProfileForm />} />
           <Route
             exact

@@ -152,7 +152,7 @@ export default function ExpenseFormForm() {
                 fontWeight: "bold",
               }}
             >
-              <Typography variant="h5">No Expenses Recorded.</Typography>
+              <Typography variant="h5">No Expense Recorded.</Typography>
             </div>
           </Card>
         )}

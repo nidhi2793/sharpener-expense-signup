@@ -6,19 +6,22 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 import AuthContext from "../store/authContext";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import ExpenseForm from "./ExpenseForm";
 import TotalAmount from "./TotalAmount";
 import ExpenseTable from "./ExpenseTable";
 import { useContext } from "react";
 import ExpenseContext from "../store/ExpenseContext";
 import logo from "../assets/expenses.png";
+import ProfileForm from "./ProfileForm";
 
 export default function Header() {
   const authCntxt = React.useContext(AuthContext);
   const expenseCtx = useContext(ExpenseContext);
   // const hasExpenses = expenseCtx.expenses.length > 0;
   const navigate = useNavigate();
+  const location = useLocation();
+  const isLocation = location.pathname === "/profileform";
   const handleLogout = () => {
     authCntxt.logout();
     localStorage.removeItem("email");
@@ -27,38 +30,46 @@ export default function Header() {
   };
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{ background: "white" }}>
+      <AppBar position="static" style={{ background: "#4477CE" }}>
         <Toolbar>
           <Typography
             variant="h6"
             component="div"
             sx={{ flexGrow: 1 }}
             style={{
-              color: "black",
+              color: "white",
               display: "flex",
               alignItems: "center",
               flexDirection: "row",
               fontWeight: "bold",
+              fontStyle: "italic",
             }}
           >
             <img src={logo} style={{ height: 50, padding: 5, margin: 5 }}></img>
             {/* <CurrencyRupeeIcon /> */}
-            Welcome to Expense Tacker !!!
+            Welcome to Expense Tracker !!!
           </Typography>
           {authCntxt.isLoggedIn && (
-            <Button onClick={handleLogout} style={{ margin: 10 }}>
+            <Button
+              onClick={handleLogout}
+              style={{ margin: 10, color: "white" }}
+            >
               Log Out
             </Button>
           )}
-          <Typography color="black">
-            Your profile is incomplete.{" "}
-            <Link underline="hover" color="blue" href="/profileform">
-              Complete now.
-            </Link>
-          </Typography>
+          {authCntxt.isLoggedIn && (
+            <Typography color="black">
+              Your profile is incomplete.{" "}
+              <Button
+                onClick={() => navigate("/profileform")}
+                style={{ color: "white", fontStyle: "italic" }}
+              >
+                Complete now.
+              </Button>
+            </Typography>
+          )}
         </Toolbar>
       </AppBar>
-      <ExpenseForm />
     </Box>
   );
 }

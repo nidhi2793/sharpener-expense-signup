@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useRef, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,6 +15,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../store/authContext";
+import { FormControl } from "@mui/material";
 
 function Copyright(props) {
   return (
@@ -37,18 +39,57 @@ const defaultTheme = createTheme();
 
 export default function ProfileForm() {
   const authCntxt = React.useContext(AuthContext);
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
+  const formRef = useRef();
+  let nameRef = useRef();
+  let photoRef = useRef();
+
+  const updateVisibleHandler = async () => {
+    try {
+      const res = await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: localStorage.getItem("token"),
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.users) {
+        // setUserData(data.users[0]);
+        nameRef.current.value = data.users[0].displayName;
+        photoRef.current.value = data.users[0].photoUrl;
+      }
+
+      console.log("data", data);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   const handleCancel = () => {
     navigate("/home");
   };
+
+  React.useEffect(() => {
+    updateVisibleHandler();
+  }, []);
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    let userDetails = {
-      userName: data.get("name"),
-      photoUrl: data.get("photourl"),
-    };
-    console.log(userDetails);
+    const enteredName = nameRef.current.value;
+    const photoUrl = photoRef.current.value;
+
+    // const data = new FormData(event.currentTarget);
+    // let userDetails = {
+    //   userName: data.get("name"),
+    //   photoUrl: data.get("photourl"),
+    // };
+    // console.log(userDetails);
 
     fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
@@ -56,8 +97,8 @@ export default function ProfileForm() {
         method: "POST",
         body: JSON.stringify({
           idToken: localStorage.getItem("token"),
-          displayName: userDetails.userName,
-          photoUrl: userDetails.photoUrl,
+          displayName: enteredName,
+          photoUrl: photoUrl,
           returnSecureToken: true,
         }),
         headers: {
@@ -67,17 +108,20 @@ export default function ProfileForm() {
     )
       .then((res) => {
         if (res.ok) {
+          alert("Profile Updated");
           return res.json();
         } else {
           return res.json().then((data) => {
             console.log("failed", data);
-            let errorMessage = "Authentication Failed";
+            let errorMessage = "Profile Update Failed";
             throw new Error(errorMessage);
           });
         }
       })
       .then((data) => {
         console.log(data);
+
+        // navigate("/home");
       })
       .catch((err) => {
         alert(err.message);
@@ -111,22 +155,44 @@ export default function ProfileForm() {
               alignItems: "center",
             }}
           >
-            <TextField
-              style={{ margin: 10 }}
-              required
-              id="name"
-              label="Full Name"
-              name="name"
-              autoFocus
-            />
-            <TextField
-              style={{ margin: 10 }}
-              required
-              name="photourl"
-              label="Profile Photo URL"
-              type="url"
-              id="photourl"
-            />
+            <Box
+              sx={{
+                mt: 1,
+                display: "flex",
+                flexDirection: "column",
+                // alignItems: "center",
+              }}
+            >
+              <label>Full Name:</label>
+              <TextField
+                style={{ margin: 10 }}
+                required={true}
+                id="name"
+                // label="Full Name"
+                name="name"
+                inputRef={nameRef}
+                autoFocus
+              />
+            </Box>
+            <Box
+              sx={{
+                mt: 1,
+                marginLeft: 2,
+                display: "flex",
+                flexDirection: "column",
+                // alignItems: "center",
+              }}
+            >
+              <label>Contact no:</label>
+              <TextField
+                style={{ margin: 10 }}
+                required={true}
+                name="photo_url"
+                // label="Photo url"
+                id="photo_url"
+                inputRef={photoRef}
+              />
+            </Box>
           </Box>
           <Box>
             <Button
