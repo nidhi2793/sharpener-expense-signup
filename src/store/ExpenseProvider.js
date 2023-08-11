@@ -1,7 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import ExpenseContext from "./ExpenseContext";
 import { useReducer } from "react";
-import AuthContext from "./authContext";
 
 let defaultExpenseState = {
   expenses: [],
@@ -18,8 +17,8 @@ const ExpenseReducer = (state, action) => {
 
   if (action.type === "REMOVE") {
     return {
-      expenses: action.updatedExpense,
-      totalAmount: action.updatedTotalAmount,
+      expenses: action.expenses,
+      totalAmount: action.totalAmount,
     };
   }
 
@@ -101,7 +100,7 @@ const ExpenseProvider = (props) => {
 
   //Removing Expense from database//
 
-  const removeExpenseHandler = async (id, cb = () => {}) => {
+  const removeExpenseHandler = async (id) => {
     const existingExpensesIndex = expenseState.expenses.findIndex(
       (expense) => expense.id === id
     );
@@ -112,7 +111,11 @@ const ExpenseProvider = (props) => {
     const updatedExpense = expenseState.expenses.filter(
       (expense) => expense.id !== id
     );
-    dispatchExpenseAction({ type: "REMOVE", id: id });
+    dispatchExpenseAction({
+      type: "REMOVE",
+      expenses: updatedExpense,
+      totalAmount: updatedTotalAmount,
+    });
     await fetch(
       `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`,
       {
@@ -127,7 +130,6 @@ const ExpenseProvider = (props) => {
         return res.json();
       })
       .then((data) => {
-        cb(true);
         console.log(data);
       })
       .catch((err) => console.log(err));

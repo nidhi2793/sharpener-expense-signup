@@ -51,13 +51,13 @@ export default function ExpenseForm() {
     console.log(expense);
   };
 
-  // const handleEdit = (ExpenseToEdit) => {
-  //   console.log(ExpenseToEdit);
-  //   descriptionRef.current.value = ExpenseToEdit.description;
-  //   expenseAmountRef.current.value = ExpenseToEdit.expenseAmount;
-  //   categoryRef.current.value = ExpenseToEdit.category;
-  //   ExpenseCntxt.removeExpense(ExpenseToEdit.id);
-  // };
+  const handleEdit = (ExpenseToEdit) => {
+    console.log(ExpenseToEdit);
+    descriptionRef.current.value = ExpenseToEdit.description;
+    expenseAmountRef.current.value = ExpenseToEdit.expenseAmount;
+    setCategory(ExpenseToEdit.category);
+    ExpenseCntxt.removeExpense(ExpenseToEdit.id);
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -171,7 +171,7 @@ export default function ExpenseForm() {
         }}
       >
         {hasItems && <TotalAmount />}
-        {hasItems && <ExpenseTable />}
+        {hasItems && <ExpenseTable onEdit={handleEdit} />}
         {/* {!hasItems && (
           <Card>
             <div

@@ -9,9 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useContext } from "react";
 import ExpenseContext from "../store/ExpenseContext";
-import AuthContext from "../store/authContext";
 import { Button } from "@mui/material";
-import { Navigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,11 +50,7 @@ export default function ExpenseTable(props) {
   );
 
   const expenseRemoveHandler = (id) => {
-    ExpenseCntxt.removeExpense(id, (remove) => {
-      if (remove) {
-        window.location.reload(false);
-      }
-    });
+    ExpenseCntxt.removeExpense(id);
   };
 
   return (
@@ -86,7 +80,11 @@ export default function ExpenseTable(props) {
               </StyledTableCell>
               <StyledTableCell>{row.category}</StyledTableCell>
               <StyledTableCell>
-                <Button variant="contained" color="success">
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={props.onEdit.bind(null, row)}
+                >
                   {" "}
                   Edit
                 </Button>
