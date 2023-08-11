@@ -3,30 +3,23 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 import AuthContext from "../store/authContext";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import ExpenseForm from "./ExpenseForm";
-import TotalAmount from "./TotalAmount";
-import ExpenseTable from "./ExpenseTable";
-import { useContext } from "react";
-import ExpenseContext from "../store/ExpenseContext";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/expenses.png";
-import ProfileForm from "./ProfileForm";
 
 export default function Header() {
   const authCntxt = React.useContext(AuthContext);
-  const expenseCtx = useContext(ExpenseContext);
   // const hasExpenses = expenseCtx.expenses.length > 0;
   const navigate = useNavigate();
-  const location = useLocation();
-  const isLocation = location.pathname === "/profileform";
+
+  const user = localStorage.getItem("name")
+    ? localStorage.getItem("name")
+    : "User";
   const handleLogout = () => {
     authCntxt.logout();
-    localStorage.removeItem("email");
+    localStorage.clear();
     navigate("/login");
-    expenseCtx.clearExpense();
   };
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -35,7 +28,7 @@ export default function Header() {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1 }}
+            sx={{ flexGrow: 0.5 }}
             style={{
               color: "white",
               display: "flex",
@@ -45,10 +38,36 @@ export default function Header() {
               fontStyle: "italic",
             }}
           >
-            <img src={logo} style={{ height: 50, padding: 5, margin: 5 }}></img>
+            <img
+              src={logo}
+              alt="logo"
+              style={{ height: 50, padding: 5, margin: 5 }}
+            ></img>
             {/* <CurrencyRupeeIcon /> */}
-            Welcome to Expense Tracker !!!
+            Welcome to Expense Tracker !!!{"      "}
           </Typography>
+          <Typography style={{ margin: 10, padding: 5 }} sx={{ flexGrow: 0.5 }}>
+            Hello {user} !!
+          </Typography>
+
+          {authCntxt.isLoggedIn && (
+            <>
+              <Button
+                onClick={() => navigate("/home")}
+                style={{ color: "white" }}
+              >
+                {" "}
+                Home
+              </Button>
+
+              <Button
+                onClick={() => navigate("/profileform")}
+                style={{ color: "white" }}
+              >
+                Profile
+              </Button>
+            </>
+          )}
           {authCntxt.isLoggedIn && (
             <Button
               onClick={handleLogout}
@@ -56,17 +75,6 @@ export default function Header() {
             >
               Log Out
             </Button>
-          )}
-          {authCntxt.isLoggedIn && (
-            <Typography color="black">
-              Your profile is incomplete.{" "}
-              <Button
-                onClick={() => navigate("/profileform")}
-                style={{ color: "white", fontStyle: "italic" }}
-              >
-                Complete now.
-              </Button>
-            </Typography>
           )}
         </Toolbar>
       </AppBar>

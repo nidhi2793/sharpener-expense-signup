@@ -1,10 +1,10 @@
 import React from "react";
-import ExpenseFormForm from "./components/ExpenseForm";
+import ExpenseForm from "./components/ExpenseForm";
 
 const Home = () => {
   return (
     <div>
-      <ExpenseFormForm />
+      <ExpenseForm />
     </div>
   );
 };

@@ -15,12 +15,7 @@ const ExpenseReducer = (state, action) => {
       totalAmount: action.totalAmount,
     };
   }
-  if (action.type === "CLEAR") {
-    return {
-      products: action.products,
-      totalAmount: action.totalAmount,
-    };
-  }
+
   if (action.type === "REMOVE") {
     return {
       expenses: action.updatedExpense,
@@ -32,8 +27,7 @@ const ExpenseReducer = (state, action) => {
 };
 
 const ExpenseProvider = (props) => {
-  const authCntxt = useContext(AuthContext);
-
+  // Removing @ and . from email to use in firebase
   let editedEmail;
   if (localStorage.getItem("email")) {
     editedEmail = localStorage
@@ -48,6 +42,8 @@ const ExpenseProvider = (props) => {
     ExpenseReducer,
     defaultExpenseState
   );
+
+  //fetching data from firebase after login//
   useEffect(() => {
     console.log("effect", editedEmail);
     const setDefaultValue = async () => {
@@ -71,7 +67,8 @@ const ExpenseProvider = (props) => {
       setDefaultValue();
     }
   }, [editedEmail]);
-  console.log("editedEmail: ", editedEmail);
+
+  //Adding Expense to database//
 
   const addExpenseHandler = async (expense) => {
     const updatedTotalAmount = expenseState.totalAmount + expense.expenseAmount;
@@ -96,10 +93,15 @@ const ExpenseProvider = (props) => {
       .then((res) => {
         return res.json();
       })
+      .then((data) => {
+        console.log(data);
+      })
       .catch((err) => console.log(err));
   };
 
-  const removeExpenseHandler = async (id) => {
+  //Removing Expense from database//
+
+  const removeExpenseHandler = async (id, cb = () => {}) => {
     const existingExpensesIndex = expenseState.expenses.findIndex(
       (expense) => expense.id === id
     );
@@ -124,11 +126,11 @@ const ExpenseProvider = (props) => {
       .then((res) => {
         return res.json();
       })
+      .then((data) => {
+        cb(true);
+        console.log(data);
+      })
       .catch((err) => console.log(err));
-  };
-
-  const clearExpensesHandler = () => {
-    dispatchExpenseAction({ type: "CLEAR", expenses: [], totalAmount: 0 });
   };
 
   const expenseContext = {
@@ -136,7 +138,6 @@ const ExpenseProvider = (props) => {
     totalAmount: expenseState.totalAmount,
     addExpense: addExpenseHandler,
     removeExpense: removeExpenseHandler,
-    clearExpense: clearExpensesHandler,
   };
 
   return (

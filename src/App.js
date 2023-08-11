@@ -2,13 +2,7 @@ import "./App.css";
 import SignUp from "./components/SignUp";
 import LogIn from "./components/Login";
 import Header from "./components/Header";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ProfileForm from "./components/ProfileForm";
 import EmailVerification from "./components/EmailVerification";
 import ForgotPassword from "./components/ForgotPassword";

@@ -4,18 +4,13 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../store/authContext";
-import { FormControl } from "@mui/material";
 
 function Copyright(props) {
   return (
@@ -62,8 +57,8 @@ export default function ProfileForm() {
       const data = await res.json();
       if (data.users) {
         // setUserData(data.users[0]);
-        nameRef.current.value = data.users[0].displayName;
-        photoRef.current.value = data.users[0].photoUrl;
+        nameRef.current.value = data.users[0].displayName || "";
+        photoRef.current.value = data.users[0].photoUrl || "";
       }
 
       console.log("data", data);
@@ -119,9 +114,7 @@ export default function ProfileForm() {
         }
       })
       .then((data) => {
-        console.log(data);
-
-        // navigate("/home");
+        navigate("/home");
       })
       .catch((err) => {
         alert(err.message);

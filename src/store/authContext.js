@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import ExpenseContext from "./ExpenseContext";
 
 const AuthContext = React.createContext({
@@ -14,7 +14,6 @@ export const AuthContextProvider = (props) => {
   // const initialEmail = localStorage.getItem("email");
   const [idtoken, setToken] = useState(initialToken);
   const [email, setEmail] = useState("");
-  const ExpenseCntxt = useContext(ExpenseContext);
 
   const userIsLoggedIn = !!idtoken;
   console.log("email: ", email);

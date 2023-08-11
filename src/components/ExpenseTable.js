@@ -11,6 +11,7 @@ import { useContext } from "react";
 import ExpenseContext from "../store/ExpenseContext";
 import AuthContext from "../store/authContext";
 import { Button } from "@mui/material";
+import { Navigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -51,7 +52,11 @@ export default function ExpenseTable(props) {
   );
 
   const expenseRemoveHandler = (id) => {
-    ExpenseCntxt.removeExpense(id);
+    ExpenseCntxt.removeExpense(id, (remove) => {
+      if (remove) {
+        window.location.reload(false);
+      }
+    });
   };
 
   return (
@@ -62,6 +67,8 @@ export default function ExpenseTable(props) {
             <StyledTableCell>Expense Description</StyledTableCell>
             <StyledTableCell>ExpenseAmount</StyledTableCell>
             <StyledTableCell>Category</StyledTableCell>
+            <StyledTableCell></StyledTableCell>
+            <StyledTableCell></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -79,11 +86,7 @@ export default function ExpenseTable(props) {
               </StyledTableCell>
               <StyledTableCell>{row.category}</StyledTableCell>
               <StyledTableCell>
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={props.onEdit(row)}
-                >
+                <Button variant="contained" color="success">
                   {" "}
                   Edit
                 </Button>
