@@ -90,40 +90,6 @@ export default function SignUp() {
     }
   };
 
-  //           }
-  //           return res.json();
-  //         } else {
-  //           return res.json().then((data) => {
-  //             console.log("failed", data);
-  //             let errorMessage = "Authentication Failed";
-
-  //             throw new Error(errorMessage);
-  //           });
-  //         }
-  //       })
-  //       .then((data) => {
-  //         navigate("/login");
-  //       })
-  //       .catch((err) => {
-  //         alert(err.message);
-  //       });
-
-  //     let Expenses = {};
-  //     fetch(
-  //       `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`,
-  //       {
-  //         method: "POST",
-  //         body: JSON.stringify(Expenses),
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     )
-  //       .then((res) => console.log(res))
-  //       .catch((err) => console.log(err));
-  //   }
-  // };
-
   return (
     <Paper>
       <ThemeProvider theme={defaultTheme}>

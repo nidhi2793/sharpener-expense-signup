@@ -121,54 +121,6 @@ export default function LogIn() {
     setLoading(false);
   };
 
-  // };
-
-  //     }
-  //   }
-  //   fetch(
-  //     "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
-  //     {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         email: userDetails.email,
-  //         password: userDetails.password,
-  //         returnSecureToken: true,
-  //       }),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   )
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         return res.json();
-  //       } else {
-  //         return res.json().then((data) => {
-  //           let errorMessage = "Authentication Failed";
-  //           throw new Error(errorMessage);
-  //         });
-  //       }
-  //     })
-  //     .then((data) => {
-  //       // authCntxt.login(data.idToken, data.email, (auth) => {
-  //       //   if (auth) {
-  //       //     navigate("/home");
-  //       //   }
-
-  //       console.log(data);
-  //       navigate("/home", { replace: true });
-  //       dispatch(
-  //         authActions.login({ idToken: data.idToken, email: data.email })
-  //       );
-  //       localStorage.setItem("name", data.displayName);
-  //       console.log("logindata", data);
-  //     })
-
-  //     .catch((err) => {
-  //       alert(err.message);
-  //     });
-  // };
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

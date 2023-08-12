@@ -8,14 +8,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useContext } from "react";
-import ExpenseContext from "../store/ExpenseContext";
 import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store/auth-slice";
 import { expenseActions } from "../store/expense-slice";
 import { themeActions } from "../store/theme-slice";
 import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,10 +38,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-// function createData(description, expenseAmount, category, id) {
-//   return { description, expenseAmount, category, id };
-// }
-
 export default function ExpenseTable(props) {
   // const ExpenseCntxt = useContext(ExpenseContext);
   const dispatch = useDispatch();
@@ -55,15 +50,6 @@ export default function ExpenseTable(props) {
     // expense.editItem(item, filter);
     dispatch(expenseActions.editItem({ item: item, filtered: filter }));
   };
-
-  // const rows = (expense.items || []).map((expense) =>
-  //   createData(
-  //     expense.description,
-  //     expense.expenseAmount,
-  //     expense.category,
-  //     expense.id
-  //   )
-  // );
 
   const expenseRemoveHandler = async (item) => {
     dispatch(expenseActions.removeItem(item));
@@ -162,7 +148,7 @@ export default function ExpenseTable(props) {
   };
 
   return (
-    <>
+    <Container>
       {!hasItems && (
         <div>
           <Card style={{ padding: 20 }}>
@@ -173,7 +159,7 @@ export default function ExpenseTable(props) {
       {hasItems && (
         <Card style={{ padding: 20, display: "flex" }}>
           <h3>
-            Total Expense <span>Rs {totalAmount}</span>
+            Total Expense: <span>Rs {totalAmount}</span>
           </h3>
           {total > 10000 &&
             (!auth.isPremium ? (
@@ -245,6 +231,6 @@ export default function ExpenseTable(props) {
           </Table>
         </TableContainer>
       )}
-    </>
+    </Container>
   );
 }

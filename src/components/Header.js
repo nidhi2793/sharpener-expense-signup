@@ -11,7 +11,7 @@ import { expenseActions } from "../store/expense-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { themeActions } from "../store/theme-slice";
 import Switch from "@mui/material/Switch";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ProfileForm from "./ProfileForm";
 
 export default function Header() {
@@ -25,41 +25,6 @@ export default function Header() {
   const location = useLocation();
   const isLocation = location.pathname === "/profileform";
 
-  // const user = localStorage.getItem("name")
-  //   ? localStorage.getItem("name")
-  //   : "User";
-
-  const updateVisibleHandler = async () => {
-    try {
-      const res = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idToken: auth.token,
-          }),
-        }
-      );
-      const data = await res.json();
-      if (data.users) {
-        setUserData(data.users[0]);
-        // nameRef.current.value = data.users[0].displayName.toUpperCase() || "";
-        // contactRef.current.value = data.users[0].photoUrl || "";
-      }
-
-      console.log("data", data);
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  useEffect(() => {
-    updateVisibleHandler();
-  }, []);
-
   const handleLogout = () => {
     // authCntxt.logout();
 
@@ -68,7 +33,7 @@ export default function Header() {
     }
     dispatch(authActions.logout());
     dispatch(expenseActions.setItemsEmpty());
-    navigate("/", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   const clickModeHandler = async () => {
@@ -76,7 +41,6 @@ export default function Header() {
   };
 
   return (
-    // <ThemeProvider theme={theme}>
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
@@ -97,12 +61,13 @@ export default function Header() {
               alt="logo"
               style={{ height: 50, padding: 5, margin: 5 }}
             ></img>
-            {/* <CurrencyRupeeIcon /> */}
-            Expense Tracker !!!{"      "}
+            Welcome to Expense Tracker !!!{"      "}
           </Typography>
           <Typography style={{ margin: 10, padding: 5 }} sx={{ flexGrow: 0.5 }}>
             Welcome{" "}
-            {userData !== null && userData.displayName !== undefined
+            {auth.isLoggedIn &&
+            userData !== null &&
+            userData.displayName !== undefined
               ? userData.displayName
               : ""}{" "}
             !!
@@ -114,13 +79,6 @@ export default function Header() {
               color="warning"
               onChange={clickModeHandler}
             />
-            // <button onClick={clickModeHandler}>
-            //   {isDarkMode ? (
-            //     <BsSunFill style={{ color: "white" }} />
-            //   ) : (
-            //     <MdModeNight />
-            //   )}
-            // </button>
           )}
 
           {auth.isLoggedIn && (
@@ -151,11 +109,7 @@ export default function Header() {
           )}
         </Toolbar>
       </AppBar>
-      {isLocation && (
-        <ProfileForm user={userData} update={updateVisibleHandler} />
-      )}
+      {isLocation && <ProfileForm user={userData} />}
     </Box>
-
-    // </ThemeProvider>
   );
 }

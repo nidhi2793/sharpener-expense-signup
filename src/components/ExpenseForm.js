@@ -7,22 +7,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 import { v4 as uuidv4 } from "uuid";
 import ExpenseTable from "./ExpenseTable";
-import Card from "@mui/material/Card";
-
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../store/expense-slice";
-
-// const theme = createTheme({
-//   palette: {
-//     mode: "dark",
-//   },
-// });
 
 export default function ExpenseForm() {
   const desInputRef = useRef();
@@ -108,28 +99,8 @@ export default function ExpenseForm() {
     dispatch(expenseActions.addItem(expDetail));
   };
 
-  // console.log("expense", expense);
-
-  // ExpenseCntxt.addExpense({
-  //   id: expense.id,
-  //   description: expense.description,
-  //   category: expense.category,
-  //   expenseAmount: expense.expenseAmount,
-  // });
-
-  // console.log(expense);
-
-  // const handleEdit = (ExpenseToEdit) => {
-  //   console.log(ExpenseToEdit);
-  //   desInputRef.current.value = ExpenseToEdit.description;
-  //   amtInputRef.current.value = ExpenseToEdit.enteredAmt;
-  //   setCategory(ExpenseToEdit.category);
-  //   dispatch(expenseActions.removeExpense(ExpenseToEdit));
-  //   // ExpenseCntxt.removeExpense(ExpenseToEdit.id);
-  // };
-
   return (
-    <Box>
+    <Container>
       <Container component="main" maxWidth="l">
         {/* <Card> */}
         <CssBaseline />
@@ -149,7 +120,7 @@ export default function ExpenseForm() {
           </Typography>
         </Box>
 
-        <Box
+        <Container
           component="form"
           onSubmit={addExpenseHandler}
           noValidate
@@ -218,18 +189,12 @@ export default function ExpenseForm() {
               </Select>
             </Box>
             <Box>
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                style={{ margin: 10 }}
-              >
+              <Button type="submit" variant="contained" style={{ margin: 10 }}>
                 Add Expense
               </Button>
             </Box>
           </Box>
-        </Box>
-        {/* </Card> */}
+        </Container>
       </Container>
       <Container
         style={{
@@ -239,22 +204,8 @@ export default function ExpenseForm() {
           justifyContent: "center",
         }}
       >
-        {/* {hasItems && <TotalAmount />} */}
-        {<ExpenseTable />}
-        {/* {!hasItems && (
-          <Card>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                fontWeight: "bold",
-              }}
-            >
-              <Typography variant="h5">No Expense Recorded.</Typography>
-            </div>
-         
-        )} */}
+        <ExpenseTable />
       </Container>
-    </Box>
+    </Container>
   );
 }
