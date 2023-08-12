@@ -58,7 +58,7 @@ export default function Header() {
 
   useEffect(() => {
     updateVisibleHandler();
-  });
+  }, []);
 
   const handleLogout = () => {
     // authCntxt.logout();

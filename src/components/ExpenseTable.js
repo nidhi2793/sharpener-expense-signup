@@ -181,7 +181,11 @@ export default function ExpenseTable(props) {
                 Activate Premium
               </Button>
             ) : (
-              <Button variant="warning" onClick={clickDownloadHandler}>
+              <Button
+                variant="warning"
+                sx={{ marginLeft: 2 }}
+                onClick={clickDownloadHandler}
+              >
                 Download List
               </Button>
             ))}
