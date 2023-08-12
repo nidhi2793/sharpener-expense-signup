@@ -13,7 +13,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../store/authContext";
 
 function Copyright(props) {
   return (
@@ -37,46 +36,53 @@ const defaultTheme = createTheme();
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
-  const authCntxt = React.useContext(AuthContext);
-  const handleSubmit = (event) => {
+  // const authCntxt = React.useContext(AuthContext);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    let userDetails = {
-      email: data.get("email"),
-    };
 
-    fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          requestType: "PASSWORD_RESET",
-          email: userDetails.email,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((data) => {
-            console.log("failed", data);
-            let errorMessage = "Authentication Failed";
+    const enteredEmail = data.get("email");
 
-            throw new Error(errorMessage);
-          });
+    try {
+      const res = await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            requestType: "PASSWORD_RESET",
+            email: enteredEmail,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      })
-      .then((data) => {
-        navigate("/login");
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
+      );
+      alert("Reset mail sent.");
+    } catch (error) {
+      alert(error);
+    }
   };
+
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         return res.json();
+  //       } else {
+  //         return res.json().then((data) => {
+  //           console.log("failed", data);
+  //           let errorMessage = "Authentication Failed";
+
+  //           throw new Error(errorMessage);
+  //         });
+  //       }
+  //     })
+  //     .then((data) => {
+  //       navigate("/login");
+  //     })
+  //     .catch((err) => {
+  //       alert(err.message);
+  //     });
+  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>

@@ -4,33 +4,87 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import AuthContext from "../store/authContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/expenses.png";
+import { authActions } from "../store/auth-slice";
+import { expenseActions } from "../store/expense-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { themeActions } from "../store/theme-slice";
+import Switch from "@mui/material/Switch";
+import { useState, useEffect } from "react";
+import ProfileForm from "./ProfileForm";
 
 export default function Header() {
-  const authCntxt = React.useContext(AuthContext);
+  // const authCntxt = React.useContext(AuthContext);
   // const hasExpenses = expenseCtx.expenses.length > 0;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [userData, setUserData] = useState(null);
+  const auth = useSelector((state) => state.auth);
+  const isDarkMode = useSelector((state) => state.theme.isDark);
+  const location = useLocation();
+  const isLocation = location.pathname === "/profileform";
 
-  const user = localStorage.getItem("name")
-    ? localStorage.getItem("name")
-    : "User";
-  const handleLogout = () => {
-    authCntxt.logout();
-    localStorage.clear();
-    navigate("/login");
+  // const user = localStorage.getItem("name")
+  //   ? localStorage.getItem("name")
+  //   : "User";
+
+  const updateVisibleHandler = async () => {
+    try {
+      const res = await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: auth.token,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.users) {
+        setUserData(data.users[0]);
+        // nameRef.current.value = data.users[0].displayName.toUpperCase() || "";
+        // contactRef.current.value = data.users[0].photoUrl || "";
+      }
+
+      console.log("data", data);
+    } catch (error) {
+      alert(error);
+    }
   };
+
+  useEffect(() => {
+    updateVisibleHandler();
+  });
+
+  const handleLogout = () => {
+    // authCntxt.logout();
+
+    if (isDarkMode === true) {
+      dispatch(themeActions.toggelTheme());
+    }
+    dispatch(authActions.logout());
+    dispatch(expenseActions.setItemsEmpty());
+    navigate("/", { replace: true });
+  };
+
+  const clickModeHandler = async () => {
+    dispatch(themeActions.toggelTheme());
+  };
+
   return (
+    // <ThemeProvider theme={theme}>
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{ background: "#4477CE" }}>
+      <AppBar position="static">
         <Toolbar>
           <Typography
             variant="h6"
             component="div"
             sx={{ flexGrow: 0.5 }}
             style={{
-              color: "white",
               display: "flex",
               alignItems: "center",
               flexDirection: "row",
@@ -44,13 +98,32 @@ export default function Header() {
               style={{ height: 50, padding: 5, margin: 5 }}
             ></img>
             {/* <CurrencyRupeeIcon /> */}
-            Welcome to Expense Tracker !!!{"      "}
+            Expense Tracker !!!{"      "}
           </Typography>
           <Typography style={{ margin: 10, padding: 5 }} sx={{ flexGrow: 0.5 }}>
-            Hello {user} !!
+            Welcome{" "}
+            {userData !== null && userData.displayName !== undefined
+              ? userData.displayName
+              : ""}{" "}
+            !!
           </Typography>
 
-          {authCntxt.isLoggedIn && (
+          {auth.isPremium && (
+            <Switch
+              defaultChecked
+              color="warning"
+              onChange={clickModeHandler}
+            />
+            // <button onClick={clickModeHandler}>
+            //   {isDarkMode ? (
+            //     <BsSunFill style={{ color: "white" }} />
+            //   ) : (
+            //     <MdModeNight />
+            //   )}
+            // </button>
+          )}
+
+          {auth.isLoggedIn && (
             <>
               <Button
                 onClick={() => navigate("/home")}
@@ -68,7 +141,7 @@ export default function Header() {
               </Button>
             </>
           )}
-          {authCntxt.isLoggedIn && (
+          {auth.isLoggedIn && (
             <Button
               onClick={handleLogout}
               style={{ margin: 10, color: "white" }}
@@ -78,6 +151,11 @@ export default function Header() {
           )}
         </Toolbar>
       </AppBar>
+      {isLocation && (
+        <ProfileForm user={userData} update={updateVisibleHandler} />
+      )}
     </Box>
+
+    // </ThemeProvider>
   );
 }

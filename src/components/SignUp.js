@@ -12,93 +12,117 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { Paper } from "@mui/material";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
+import { useState } from "react";
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    let userDetails = {
-      email: data.get("email"),
-      password: data.get("password"),
-      confirmpassword: data.get("confirmpassword"),
-    };
-    const editedEmail = userDetails.email.replace("@", "").replace(".", "");
+  const [isLoading, setIsLoading] = useState(false);
+  const [verifyMail, setVerifymail] = useState(false);
 
-    if (userDetails.password !== userDetails.confirmpassword) {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+    const data = new FormData(event.currentTarget);
+
+    const enteredEmail = data.get("email");
+    const enteredPass = data.get("password");
+    const enteredConPass = data.get("confirmpassword");
+
+    // const editedEmail = enteredEmail.replace("@", "").replace(".", "");
+
+    if (enteredPass !== enteredConPass) {
       alert("Password do not match");
-    } else {
-      fetch(
+    }
+    try {
+      const res = await fetch(
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
         {
           method: "POST",
           body: JSON.stringify({
-            email: userDetails.email,
-            password: userDetails.password,
+            email: enteredEmail,
+            password: enteredPass,
             returnSecureToken: true,
           }),
           headers: {
             "Content-Type": "application/json",
           },
         }
-      )
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
+      );
+      const data = await res.json();
+      console.log(data);
+      if (res.ok) {
+        try {
+          const response = await fetch(
+            "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                requestType: "VERIFY_EMAIL",
+                idToken: data.idToken,
+              }),
+              headers: {
+                "content-type": "application/json",
+              },
+            }
+          );
+          if (response.ok) {
+            setIsLoading(false);
+            alert("Verification email sent.");
+            setVerifymail(true);
+            setTimeout(() => {
+              setVerifymail(false);
+            }, 10000);
           } else {
-            return res.json().then((data) => {
-              console.log("failed", data);
-              let errorMessage = "Authentication Failed";
-
-              throw new Error(errorMessage);
-            });
+            throw new Error("Sign Up failed. Try again.");
           }
-        })
-        .then((data) => {
-          navigate("/login");
-        })
-        .catch((err) => {
-          alert(err.message);
-        });
-
-      let Expenses = {};
-      fetch(
-        `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`,
-        {
-          method: "POST",
-          body: JSON.stringify(Expenses),
-          headers: {
-            "Content-Type": "application/json",
-          },
+        } catch (error) {
+          alert(error);
         }
-      )
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+      } else {
+        throw Error("Authentication Failed");
+      }
+    } catch (error) {
+      alert(error);
+      setIsLoading(false);
     }
   };
+
+  //           }
+  //           return res.json();
+  //         } else {
+  //           return res.json().then((data) => {
+  //             console.log("failed", data);
+  //             let errorMessage = "Authentication Failed";
+
+  //             throw new Error(errorMessage);
+  //           });
+  //         }
+  //       })
+  //       .then((data) => {
+  //         navigate("/login");
+  //       })
+  //       .catch((err) => {
+  //         alert(err.message);
+  //       });
+
+  //     let Expenses = {};
+  //     fetch(
+  //       `https://expensetacker2-default-rtdb.firebaseio.com/expense/${editedEmail}.json`,
+  //       {
+  //         method: "POST",
+  //         body: JSON.stringify(Expenses),
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     )
+  //       .then((res) => console.log(res))
+  //       .catch((err) => console.log(err));
+  //   }
+  // };
 
   return (
     <Paper>
@@ -164,8 +188,13 @@ export default function SignUp() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign Up
+                {!isLoading ? "Sign up" : "Sending request..."}
               </Button>
+              {verifyMail && (
+                <p style={{ margin: "1rem", color: "green" }}>
+                  Please varify email. Verfication mail already sent.
+                </p>
+              )}
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2"></Link>
@@ -174,7 +203,7 @@ export default function SignUp() {
                   <Link
                     href="#"
                     variant="body2"
-                    onClick={() => navigate("./login")}
+                    onClick={() => navigate("/login")}
                   >
                     {"Already have an account? Sign In"}
                   </Link>
@@ -182,7 +211,6 @@ export default function SignUp() {
               </Grid>
             </Box>
           </Box>
-          <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
       </ThemeProvider>
     </Paper>

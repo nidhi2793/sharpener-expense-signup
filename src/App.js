@@ -8,22 +8,31 @@ import EmailVerification from "./components/EmailVerification";
 import ForgotPassword from "./components/ForgotPassword";
 import ExpenseProvider from "./store/ExpenseProvider";
 import { useContext, useState } from "react";
-import AuthContext from "./store/authContext";
+
 import Home from "./Home";
 import { createContext } from "react";
-
-export const ThemeContext = createContext(null);
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { authActions } from "./store/auth-slice";
+import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 
 function App() {
-  const authCntxt = useContext(AuthContext);
-  const [theme, setTheme] = useState("light");
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const isDarkMode = useSelector((state) => state.theme.isDark);
+
+  const theme = createTheme({
+    palette: {
+      mode: isDarkMode ? "dark" : "light",
+    },
+  });
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
-      <div id={theme}>
+    <ThemeProvider theme={theme}>
+      <Box>
         <ExpenseProvider>
           <Header />
-          {!authCntxt.isLoggedIn && (
+          {!isLoggedIn && (
             <Routes>
               <Route exact path="/" element={<SignUp />}></Route>
               <Route
@@ -34,7 +43,7 @@ function App() {
               <Route path="*" element={<LogIn />}></Route>
             </Routes>
           )}
-          {authCntxt.isLoggedIn && (
+          {isLoggedIn && (
             <Routes>
               <Route exact path="/" element={<SignUp />} />
               <Route exact path="/login" element={<LogIn />} />
@@ -44,7 +53,7 @@ function App() {
                 element={<ForgotPassword />}
               ></Route>
               <Route exact path="/home" element={<Home />} />
-              <Route exact path="/profileform" element={<ProfileForm />} />
+              {/* <Route exact path="/profileform" element={<ProfileForm />} /> */}
               <Route
                 exact
                 path="/emailverification"
@@ -53,8 +62,8 @@ function App() {
             </Routes>
           )}
         </ExpenseProvider>
-      </div>
-    </ThemeContext.Provider>
+      </Box>
+    </ThemeProvider>
   );
 }
 

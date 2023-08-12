@@ -10,7 +10,7 @@ export default function EmailVerification() {
   const navigate = useNavigate();
 
   const handleClose = () => setOpen(false);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("user");
   const handleEmailVerify = () => {
     fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
