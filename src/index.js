@@ -10,10 +10,8 @@ import store from "./store/index";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <AuthContextProvider>
-      <CustomBrowserRouter>
-        <App />
-      </CustomBrowserRouter>
-    </AuthContextProvider>
+    <CustomBrowserRouter>
+      <App />
+    </CustomBrowserRouter>
   </Provider>
 );

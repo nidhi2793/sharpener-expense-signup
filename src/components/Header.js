@@ -25,6 +25,37 @@ export default function Header() {
   const location = useLocation();
   const isLocation = location.pathname === "/profileform";
 
+  const updateVisibleHandler = async () => {
+    try {
+      const res = await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCiw7FMYxl7SNKj9nctr7CU6KyoLBlivAk",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: localStorage.getItem("user"),
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.users) {
+        setUserData(data.users[0]);
+        // nameRef.current.value = data.users[0].displayName.toUpperCase() || "";
+        // contactRef.current.value = data.users[0].photoUrl || "";
+      }
+
+      console.log("data", data);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  React.useEffect(() => {
+    updateVisibleHandler();
+  }, []);
+
   const handleLogout = () => {
     // authCntxt.logout();
 

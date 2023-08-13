@@ -94,7 +94,7 @@ export default function LogIn() {
             return;
           } else {
             setIsVerifyEmail(false);
-            navigate("/home", { replace: true });
+            navigate("/", { replace: true });
             startLogoutTimer();
             dispatch(
               authActions.login({ tokenId: data.idToken, email: data.email })
