@@ -114,10 +114,7 @@ export default function Header() {
 
           {auth.isLoggedIn && (
             <>
-              <Button
-                onClick={() => navigate("/home")}
-                style={{ color: "white" }}
-              >
+              <Button onClick={() => navigate("/")} style={{ color: "white" }}>
                 {" "}
                 Home
               </Button>
