@@ -13,6 +13,8 @@ import { themeActions } from "../store/theme-slice";
 import Switch from "@mui/material/Switch";
 import { useState } from "react";
 import ProfileForm from "./ProfileForm";
+import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 export default function Header() {
   // const authCntxt = React.useContext(AuthContext);
@@ -105,11 +107,15 @@ export default function Header() {
           </Typography>
 
           {auth.isPremium && (
-            <Switch
-              defaultChecked
-              color="warning"
-              onChange={clickModeHandler}
-            />
+            <>
+              <WbSunnyOutlinedIcon />
+              <Switch
+                defaultChecked
+                color="warning"
+                onChange={clickModeHandler}
+              />
+              <DarkModeIcon style={{ marginRight: 10 }} />
+            </>
           )}
 
           {auth.isLoggedIn && (

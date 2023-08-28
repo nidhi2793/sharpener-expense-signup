@@ -91,90 +91,88 @@ export default function SignUp() {
   };
 
   return (
-    <Paper>
-      <ThemeProvider theme={defaultTheme}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 3,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "white",
+            padding: 3,
+            borderRadius: 10,
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
           <Box
-            sx={{
-              marginTop: 3,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "white",
-              padding: 3,
-              borderRadius: 10,
-            }}
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign up
-            </Typography>
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1 }}
-            >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="confirmpassword"
-                label=" Confirm Password"
-                type="password"
-                id="confirmpassword"
-              />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmpassword"
+              label=" Confirm Password"
+              type="password"
+              id="confirmpassword"
+            />
 
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                {!isLoading ? "Sign up" : "Sending request..."}
-              </Button>
-              {verifyMail && (
-                <p style={{ margin: "1rem", color: "green" }}>
-                  Please varify email. Verfication mail already sent.
-                </p>
-              )}
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2"></Link>
-                </Grid>
-                <Grid item>
-                  <Link href="/login" variant="body2">
-                    {"Already have an account? Sign In"}
-                  </Link>
-                </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {!isLoading ? "Sign up" : "Sending request..."}
+            </Button>
+            {verifyMail && (
+              <p style={{ margin: "1rem", color: "green" }}>
+                Please varify email. Verfication mail already sent.
+              </p>
+            )}
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2"></Link>
               </Grid>
-            </Box>
+              <Grid item>
+                <Link href="/login" variant="body2">
+                  {"Already have an account? Sign In"}
+                </Link>
+              </Grid>
+            </Grid>
           </Box>
-        </Container>
-      </ThemeProvider>
-    </Paper>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
