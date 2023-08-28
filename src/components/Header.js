@@ -114,7 +114,7 @@ export default function Header() {
                 color="warning"
                 onChange={clickModeHandler}
               />
-              <DarkModeIcon style={{ marginRight: 10 }} />
+              <DarkModeIcon style={{ marginRight: 8 }} />
             </>
           )}
 
