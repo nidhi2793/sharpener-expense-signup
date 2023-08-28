@@ -45,7 +45,7 @@ export default function ProfileForm() {
   };
 
   const handleCancel = () => {
-    navigate("/home");
+    navigate("/");
   };
 
   React.useEffect(() => {
